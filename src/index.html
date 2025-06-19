@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+</head>
+<body>
+    <input id="fileUpload" type="file">
+    <button onclick="uploadFile()">Upload</button>
+    <progress id="uploadProgress" value="0" max="100" style="width: 100%;"></progress>
+    <script>
+        const uploadFile =  async ()=>{
+            const fileUpload = document.getElementById('fileUpload');
+            //FormData() = web api ที่ broweser เตรียมไว้ให้
+            const formData = new FormData();
+            //fileUpload.files[0] = blob file
+            //formData.append('key ที่ส่ง',blob file);
+            formData.append('test',fileUpload.files[0]);
+            try{
+                //default ของ axios จะเป็น application JSON
+                //แต่เราจะส่ง format ของ form = 'Content-Type':'multipart/form-data'
+                //ให้ axios.post ส่งข้อมูลอัปโหลดไปที่ http://localhost:8000/upload,blob file,headers
+                const respone = await axios.post('http://localhost:8000/upload',formData,{
+                    headers:{
+                        'Content-Type':'multipart/form-data'
+                    },
+                    onUploadProgress: function(progressValue){
+                        uploadProgress.value = (progressValue.progress)*100
+                        //console.log(progressValue.progress);
+                    }//onUploadProgress
+                })
+                console.log('Server respone',respone.data);
+            }
+            catch(err){
+                console.log(err);
+                alert('something wrong when upload');
+            }
+        }
+    </script>
+</body>
+</html>
