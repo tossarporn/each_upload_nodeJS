@@ -13,6 +13,15 @@
     <script>
         const uploadFile =  async ()=>{
             const fileUpload = document.getElementById('fileUpload');
+            const selectedFile = fileUpload.files[0];
+            console.log(selectedFile);
+            //byteแปลงเป็น KB 1024 และ KB แปลงเป็น 1024Mb ขนาดไฟล์ไม่เกิน 2 Mb
+            if(selectedFile.size > 1024*1024 *2 ){
+                alert('ไม่ให้อัปโหลด');
+                return false
+            }
+
+            
             //FormData() = web api ที่ broweser เตรียมไว้ให้
             const formData = new FormData();
             //fileUpload.files[0] = blob file
