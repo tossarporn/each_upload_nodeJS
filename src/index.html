@@ -13,7 +13,26 @@
     <script>
         const uploadFile =  async ()=>{
             const fileUpload = document.getElementById('fileUpload');
-            console.log(fileUpload.files[0]);
+            //FormData() = web api ที่ broweser เตรียมไว้ให้
+            const formData = new FormData();
+            //fileUpload.files[0] = blob file
+            //formData.append('key ที่ส่ง',blob file);
+            formData.append('test',fileUpload.files[0]);
+            try{
+                //default ของ axios จะเป็น application JSON
+                //แต่เราจะส่ง format ของ form = 'Content-Type':'multipart/form-data'
+                //ให้ axios.post ส่งข้อมูลอัปโหลดไปที่ http://localhost:8000/upload,blob file,headers
+                const respone = await axios.post('http://localhost:8000/upload',formData,{
+                    headers:{
+                        'Content-Type':'multipart/form-data'
+                    }
+                })
+                console.log('Server respone',respone.data);
+            }
+            catch(err){
+                console.log(err);
+                alert('something wrong when upload');
+            }
         }
     </script>
 </body>
