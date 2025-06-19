@@ -14,6 +14,11 @@
         const uploadFile =  async ()=>{
             const fileUpload = document.getElementById('fileUpload');
             const selectedFile = fileUpload.files[0];
+            
+            if(selectedFile.type !== 'image/png'){
+                alert('ไม่ให้ไฟลประเภทนี้ อัปโหลด');
+                return false;
+            }
              //FormData() = web api ที่ broweser เตรียมไว้ให้
             const formData = new FormData();
             //fileUpload.files[0] = blob file
