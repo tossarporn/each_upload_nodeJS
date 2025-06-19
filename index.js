@@ -15,7 +15,12 @@ const storage = multer.diskStorage({
 })
 
 //dest:'uploads/' คืออัพโหลดไปยังไฟล์ uploads/
-const upload = multer({storage});
+const upload = multer({
+    storage,
+    limits:{
+        fileSize:1024*1024*2
+    }
+});
 const cors = require('cors');
 
 const port = '8000';
