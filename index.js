@@ -15,7 +15,23 @@ const storage = multer.diskStorage({
 })
 
 //dest:'uploads/' คืออัพโหลดไปยังไฟล์ uploads/
-const upload = multer({storage});
+const upload = multer({
+    storage,
+    limits:{
+        fileSize:1024*1024*2
+    },
+    fileFilter:(req,file,cb)=>{
+      if(file.mimetype === 'image/png'){
+        //allow
+        //ถ้าข้อมูลผ่าน ไม่ต้องส่ง callback กลับมา
+        cb(null,true)
+      }
+      else{
+        //ถ้าข้อมูลไม่ผ่าน จะ callback กลับมา
+        cb(new Error('not allow other files witout image/png'),false)
+      }
+    }
+});
 const cors = require('cors');
 
 const port = '8000';
@@ -25,11 +41,17 @@ app.use(cors());
 
 //app.post('/part',Middleware=>upload.single('keyที่รับ'),(req,res)
 app.post('/upload',upload.single('test'),(req,res)=>{
-    //1.ตัวแปรที่จะรับชื่อตัวแปร อะไร
-    //2.part ที่จะเอาไฟล์ไปวาง
-    res.json({
-        message:"Hello upload"
-    });
+  res.json({
+        message:"upload succreeful"
+      });
+    // upload.single('test')(req,res,(err)=>{
+    //   console.log(err)
+    //   if(err){
+    //     res.status(400).json({message:err.message});
+    //     return false;// ไม่ให้ return ซ้ำ
+    //   }
+      
+    // });
 })
 
 app.listen(port,()=>{

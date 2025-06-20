@@ -13,7 +13,8 @@
     <script>
         const uploadFile =  async ()=>{
             const fileUpload = document.getElementById('fileUpload');
-            //FormData() = web api ที่ broweser เตรียมไว้ให้
+            const selectedFile = fileUpload.files[0];
+             //FormData() = web api ที่ broweser เตรียมไว้ให้
             const formData = new FormData();
             //fileUpload.files[0] = blob file
             //formData.append('key ที่ส่ง',blob file);
@@ -34,7 +35,7 @@
                 console.log('Server respone',respone.data);
             }
             catch(err){
-                console.log(err);
+                //console.log('error',err);
                 alert('something wrong when upload');
             }
         }
