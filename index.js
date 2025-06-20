@@ -16,21 +16,7 @@ const storage = multer.diskStorage({
 
 //dest:'uploads/' คืออัพโหลดไปยังไฟล์ uploads/
 const upload = multer({
-    storage,
-    limits:{
-        fileSize:1024*1024*2
-    },
-    fileFilter:(req,file,cb)=>{
-      if(file.mimetype === 'image/png'){
-        //allow
-        //ถ้าข้อมูลผ่าน ไม่ต้องส่ง callback กลับมา
-        cb(null,true)
-      }
-      else{
-        //ถ้าข้อมูลไม่ผ่าน จะ callback กลับมา
-        cb(new Error('not allow other files witout image/png'),false)
-      }
-    }
+    storage
 });
 const cors = require('cors');
 

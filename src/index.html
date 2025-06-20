@@ -9,8 +9,10 @@
 <body>
     <input id="fileUpload" type="file">
     <button onclick="uploadFile()">Upload</button>
+    <button onclick="cancelUpload()">Cancel</button>
     <progress id="uploadProgress" value="0" max="100" style="width: 100%;"></progress>
     <script>
+        let currentSource//สร้างเพื่อเก็บค่า
         const uploadFile =  async ()=>{
             const fileUpload = document.getElementById('fileUpload');
             const selectedFile = fileUpload.files[0];
@@ -20,6 +22,8 @@
             //formData.append('key ที่ส่ง',blob file);
             formData.append('test',fileUpload.files[0]);
             try{
+                const source = axios.CancelToken.source();
+                currentSource = source //ผูก axios.CancelToken.source เพื่อนำ currentSource ไปใช้ต่อ
                 //default ของ axios จะเป็น application JSON
                 //แต่เราจะส่ง format ของ form = 'Content-Type':'multipart/form-data'
                 //ให้ axios.post ส่งข้อมูลอัปโหลดไปที่ http://localhost:8000/upload,blob file,headers
@@ -29,14 +33,26 @@
                     },
                     onUploadProgress: function(progressValue){
                         uploadProgress.value = (progressValue.progress)*100
-                        //console.log(progressValue.progress);
-                    }//onUploadProgress
+                    },//onUploadProgress
+                    //แนะนำให้ใช้ AbortController แทน
+                    cancelToken:source.token//ยกเลิก request ที่ยังไม่เสร็จ
                 })
                 console.log('Server respone',respone.data);
             }
             catch(err){
-                //console.log('error',err);
-                alert('something wrong when upload');
+                console.log('err',err);
+                if(axios.isCancel(err)){
+                    alert('Cancel Uploads')//ถ้ามีการ cancel ให้แสดงข้อความนี้
+                }
+                else{
+                    alert('something wrong when upload');
+                }
+                uploadProgress.value = 0//ตั้งให้แถบ progress เริ่มต้นที่ 0% ก่อนเริ่มอัปโหลด
+            }
+        }
+        const cancelUpload =  ()=>{
+            if(currentSource){
+                currentSource.cancel('Cancel Upload');
             }
         }
     </script>
