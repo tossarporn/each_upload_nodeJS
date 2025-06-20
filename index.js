@@ -1,6 +1,16 @@
 //server.js
 const express = require('express');
+const cors = require('cors');
 const multer = require('multer');
+
+const path = require('path');
+const fs = require('fs');
+
+
+
+const app = express();
+app.use(cors());
+const port = '8000';
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -10,7 +20,12 @@ const storage = multer.diskStorage({
     //Date.now() = การเอาเวลาปัจจุบัน แต่เป็น unixtime ตัวเลขชุดเดียวออกมา
     //file.originalname = อัปโหลดชื่อไฟล์ไหนใช้ ชื่อไฟล์นั้นรวมทั้งสกุลไฟล์นั้นด้วย
     const fileName = `${Date.now()}-${file.originalname}`;
-    cb(null, fileName)
+    cb(null, fileName);
+    req.on('aborted',()=>{
+      
+      const fullpath = path.join('uploads',fileName);
+      fs.unlinkSync(fullpath)
+    })
   }
 })
 
@@ -18,12 +33,7 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage
 });
-const cors = require('cors');
 
-const port = '8000';
-
-const app = express();
-app.use(cors());
 
 //app.post('/part',Middleware=>upload.single('keyที่รับ'),(req,res)
 app.post('/upload',upload.single('test'),(req,res)=>{
